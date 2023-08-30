@@ -1,0 +1,144 @@
+﻿@model Data.Models.ShowModel
+
+@{
+    ViewBag.Title = "EditShow";
+}
+
+<h2 style=" font-size: 25px;">Edit Show >  @Html.DisplayFor(model => model.MultiplexName)</h2>
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Time, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Time, new
+                {
+                    @class = "form-control datepicker"@*, disabled = "disabled"*@})
+                @Html.ValidationMessageFor(model => model.Time, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MultiplexName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10" style="margin-top:4px; font-size : 17px">
+                @Model.MultiplexName
+                @Html.ValidationMessageFor(model => model.MultiplexName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ScreenName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("ScreenId", new SelectList(ViewBag.Screen, "Value", "Text"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ScreenName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MovieName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("MovieId", new SelectList(Model.MovieList, "Value", "Text"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.MovieName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.LanguageName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("LanguageId", new SelectList(Model.LanguageList, "Value", "Text"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.LanguageName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FormateName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("FormateId", new SelectList(Model.FormateList, "Value", "Text"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.FormateName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        @Html.HiddenFor(x => x.MultiplexId)
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+                <a href="@Url.Action("ShowList","Screen",new {multiplexId = Model.MultiplexId  })" class="btn btn-default">Cancel</a>
+            </div>
+        </div>
+    </div>
+}
+
+@*<script>
+        window.onload = function () {
+            //alert('Windows loaded ! ');
+            //debugger
+            $.ajax({
+                type: "post",
+                url: '/Home/GetScreen?multiplexId=' + $("#MultiplexId").val(),
+                contentType: "html",
+                success: function (response) {
+                    $("#ScreenId").empty();
+                    $("#ScreenId").append(response);
+                }
+            });
+        };
+    </script>*@
+
+<script src="~/Scripts/jquery-3.4.1.slim.min.js"></script>
+
+<script>
+
+    $("#MovieId").hover(function () {
+        //alert("111");
+        //debugger
+        $.ajax({
+            type: "GET",
+            url: '/Home/GetLanguage?movieId=' + $("#MovieId").val(),
+            contentType: "html",
+            success: function (response) {
+                $("#LanguageId").html(response);
+            }
+        });
+
+        $.ajax({
+            type: "GET",
+            url: '/Home/GetFormate?movieId=' + $("#MovieId").val(),
+            contentType: "html",
+            success: function (response) {
+                $("#FormateId").html(response);
+            }
+        });
+    });
+
+</script>
+
+
+<script type="text/javascript">
+    $(function () {
+        $('.datepicker').datetimepicker({
+
+            showTodayButton: true,
+            showClose: true,
+            minDate: new Date()
+        });
+
+    });
+</script>

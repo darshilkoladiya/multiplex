@@ -1,0 +1,94 @@
+﻿@*@model IEnumerable<Data.Models.ShowModel>*@
+@model Data.Models.ScreenListModel
+@{
+    ViewBag.Title = "ShowList";
+}
+
+<div style="display:flex">
+    <h3 style="margin-bottom: 20px;">
+
+        Shows >  @Html.DisplayFor(modelItem => Model.Name)
+    </h3>
+    <h3 style="margin-left: auto; margin-top: 18px; ">
+        <a href="@Url.Action("CreateShow","Screen",new { id = Model.Id })" class="btn btn-default">Add New Show</a>
+    </h3>
+</div>
+
+<table class="table table-hover">
+    <tr>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Time)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MultiplexName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ScreenName)
+        </th>
+        <th>
+            Language
+            @*@Html.DisplayNameFor(model => model.LanguageName)*@
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MovieName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FormateName)
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.showModelList)
+    {
+        <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Time)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => Model.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScreenName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LanguageName)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FormateName)
+            </td>
+            <td style="text-align:right">
+                @{
+                    if (item.Time >= DateTime.Now)
+                    {
+                        <button>
+                            @Html.ActionLink("Edit", "EditShow", new { id = item.Id })
+                        </button>
+                        <button>
+                            @Html.ActionLink("Delete", "DeleteShow", new { id = item.Id }, new { onclick = "return confirm('You are sure wants to delete this Record?')" })
+                        </button>
+                        <button>
+                            @Html.ActionLink("Seat","ShowPriceList",new { showId = item.Id})
+                        </button>
+
+                    }
+                }
+
+
+            </td>
+        </tr>
+    }
+
+</table>
+<a href="@Url.Action("Index","Multiplex")" class="btn btn-default">Back</a>
+<script>
+    setTimeout(function () {
+        location.reload();
+    }, 60000);
+</script>

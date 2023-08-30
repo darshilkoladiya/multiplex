@@ -1,0 +1,14 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/ServiceLayer/obj
+/ServiceLayer/bin
+/ServiceLayer/.vs/ServiceLayer/v16
+/Repository/obj
+/Repository/bin
+/Multiplex/obj
+/Multiplex/bin
+/Multiplex/.vs
+/Data/obj
+/Data/bin

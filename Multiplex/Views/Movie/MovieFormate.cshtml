@@ -1,0 +1,49 @@
+﻿@*@model IEnumerable<Data.Models.FormateMovieModel>*@
+@model Data.Models.MovieListModel
+
+@{
+    ViewBag.Title = "MovieFormate";
+}
+
+
+<div style="display:flex">
+    <h3 style="margin-bottom: 20px;">
+
+        Formate >  @Html.DisplayFor(modelItem => Model.MovieName)
+    </h3>
+    <h3 style="margin-left: auto; margin-top: 18px; ">
+        <a href="@Url.Action("CreateFormate","Movie", new { id = Model.Id })" class="btn btn-default">Add New Formate</a>
+        @*@Html.ActionLink("Add New Formate", "CreateFormate")*@
+    </h3>
+</div>
+
+<table class="table table-hover">
+    <tr>
+
+        <th>
+            @Html.DisplayNameFor(model => model.FormateName)
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.formateMovieModelsList)
+    {
+        <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.FormateName)
+            </td>
+
+            <td style="text-align:right">
+                <button>
+                    @Html.ActionLink("Delete", "DeleteFormate", new { id = item.Id }, new { onclick = "return confirm('You are sure wants to delete this Record?');" })
+                </button>
+            </td>
+        </tr>
+    }
+
+</table>
+<div>
+    <a href="@Url.Action("MovieList","Movie")" class="btn btn-default">Back</a>
+</div>

@@ -1,0 +1,56 @@
+﻿@*@model IEnumerable<Data.Entity.States>*@
+@model PagedList.IPagedList<Data.Entity.States>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@{
+    ViewBag.Title = "StateList";
+}
+
+
+<div style="display:flex">
+    <h3 style="margin-bottom: 20px;">
+        State List
+    </h3>
+    <h3 style="margin-left: auto; margin-top: 18px; ">
+        <a href="@Url.Action("CreateState","Home")" class="btn btn-default">Create New</a>
+    </h3>
+</div>
+
+@using (Html.BeginForm("StateList", "Home", FormMethod.Get))
+{
+    <p>
+        <b>Find by Name : </b> @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            Name
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td style="text-align:right">
+                <button>
+                    @Html.ActionLink("Edit", "EditState", new { id = item.Id }) 
+                </button>
+                <button>
+                    @Html.ActionLink("Delete", "DeleteState", new { id = item.Id }, new { onclick = "return confirm('You are sure wants to delete this Record?');" })
+                </button>
+            </td>
+        </tr>
+    }
+
+</table>
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("StateList",
+    new { page, currentFilter = ViewBag.CurrentFilter }))

@@ -1,0 +1,46 @@
+﻿@*@model IEnumerable<Data.Models.Movie_Multiplex_Model>*@
+@model Data.Models.ScreenListModel
+
+@{
+    ViewBag.Title = "MovieMultiplexList";
+}
+
+<div style="display:flex">
+    <h3 style="margin-bottom: 20px;">
+
+        Movie List >  @Html.DisplayFor(modelItem => Model.Name)
+    </h3>
+    <h3 style="margin-left: auto; font-size: 22px; margin-top: 18px; ">
+        <a href="@Url.Action("AddMovie","Screen",new { id = Model.Id })" class="btn btn-default">Add New Movie</a>
+    </h3>
+</div>
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.MovieName)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.movieMultiplexModelsList)
+    {
+        <tr>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieName)
+            </td>
+            <td style="text-align: right;">
+                <button>
+                    @Html.ActionLink("Edit", "EditMovieMultiplex", new { id = item.Id }) 
+                </button>
+                <button>
+                    @Html.ActionLink("Delete", "DeleteMovieMultiplex", new { id = item.Id }, new { onclick = "return confirm('You are sure wants to delete this Record?')" })
+                </button>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<a href="@Url.Action("Index","Multiplex")" class="btn btn-default">Back</a>

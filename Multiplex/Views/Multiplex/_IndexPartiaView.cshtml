@@ -1,0 +1,169 @@
+﻿@model PagedList.IPagedList<Data.Models.MultiplexModel>
+@using PagedList.Mvc;
+
+
+@{
+    Layout = null;
+    ViewBag.Title = "Index";
+}
+
+
+<table class="table table-hover" style="margin-top: 10px;">
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Address
+        </th>
+        <th>
+            City
+        </th>
+        <th>
+            State
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CityName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StateName)
+            </td>
+
+            <td style="text-align:right">
+
+                <button class="btn btn-primary glyphicon glyphicon-pencil" name="Addbtn" onclick="EditMultiplex(@item.Id)" type="button"> Edit</button>
+
+                <button class="btn btn-danger delete glyphicon glyphicon-trash" onclick="DeleteMultiplex(@item.Id)">
+                    <span>Delete</span>
+                </button>
+
+                <button style="color:white;" class="btn btn-info Openarrow" onclick="openButton()"><b>>></b></button>
+
+                @Html.ActionLink("Screen", "ScreenList", new { id = item.Id }, new { @class = "btn btn-warning Screen" })
+
+                @Html.ActionLink("Movie", "MovieList", new { id = item.Id }, new { @class = "btn btn-info Movie" })
+
+                @Html.ActionLink("Show", "ShowList", new { id = item.Id }, new { @class = "btn btn-default Show", style = "background-color:darkgray" })
+
+
+                <button style="color:white;" class="btn btn-info Closearrow" onclick="closeButton()"><b><<</b></button>
+
+            </td>
+        </tr>
+    }
+
+</table>
+
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+    <div id="ContantPager">
+        @Html.PagedListPager(Model, page => Url.Action("Index",
+            new { page }))
+    </div>
+    
+
+    <script>
+
+        function DeleteMultiplex(id) {
+
+            swal
+                ({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover the deleted record(s) again!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            //swal("Deleted!", "Your history has been deleted.", "success");
+                            swal
+                                ({
+                                    title: "Deleted!",
+                                    text: "Your Data has been deleted.",
+                                    type: "success",
+                                    //confirmButtonColor: "#DD6B55",
+                                    confirmButtonText: "OK",
+                                },
+                                    function (isConfirm) {
+                                        if (isConfirm) {
+
+                                            $.ajax({
+                                                type: 'GET',
+                                                url: '/Multiplex/IndexPartialViewAsync',
+                                                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                                                success: function (responce) {
+                                                    toastr.error("Your data deleted.", "Delete", { timeout: 300 })
+                                                    $("#multiplexcontent").html(responce);
+                                                    $(".Openarrow").show();
+                                                    $(".Screen").hide();
+                                                    $(".Movie").hide();
+                                                    $(".Show").hide();
+                                                    $(".Closearrow").hide();
+                                                }
+                                            });
+
+                                        }
+                                    });
+
+                            $.ajax({
+                                type: 'GET',
+                                url: '/Multiplex/Delete',
+                                dataType: 'JSON',
+                                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                                data: { id: id /*deleteId*/ },
+                                success: function (data) {
+                                    $(".delete-" + id /*deleteId*/).closest('tr').remove();
+                                }
+                            });
+                        }
+
+                        else {
+                            swal("Cancelled", "Your record is safe :)", "error");
+                        }
+                    });
+        }
+
+    </script>
+
+    <script>
+        window.onload = function () {
+            $(".Openarrow").show();
+            $(".Screen").hide();
+            $(".Movie").hide();
+            $(".Show").hide();
+            $(".Closearrow").hide();
+        };
+
+        function openButton() {
+            $(".Openarrow").hide();
+            $(".Screen").show();
+            $(".Movie").show();
+            $(".Show").show();
+            $(".Closearrow").show();
+        };
+
+        function closeButton() {
+            $(".Openarrow").show();
+            $(".Screen").hide();
+            $(".Movie").hide();
+            $(".Show").hide();
+            $(".Closearrow").hide();
+        };
+
+    </script>

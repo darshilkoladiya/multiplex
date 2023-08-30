@@ -1,0 +1,188 @@
+﻿
+@model IEnumerable<Data.Models.MultiplexModel>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    button.glyphicon {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    button.glyphicon::before{
+        font-family: "Glyphicons Halflings";
+    }
+</style>
+
+
+<div style="display:flex">
+    <h3 style="margin-left: auto; margin-right: 5%; font-size: 22px; margin-top: 18px; ">
+        <button class="btn btn-primary Addbtn glyphicon glyphicon-file" name="Addbtn" onclick="CreateMultiplex()" type="button"> Add New</button>
+    </h3>
+</div>
+
+<style>
+    .selectFilter {
+        max-width: 175px !important;
+        border-radius: 20px !important;
+    }
+</style>
+
+@using (Html.BeginForm("Index", "Multiplex"))
+{
+    <h4><b>Find by :</b></h4>
+    <div style="display:flex">
+        <div class="d-flex">
+            <b>Name : </b> @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control selectFilter", style = "display: inline;" })
+        </div>
+        <div style="display: flex; width: 225px; margin-left: 20px; ">
+            <b style="margin-top: 5px; margin-right: 6px;">State : </b>@Html.DropDownList("StateId", new SelectList(ViewBag.state, "Value", "Text"), "-- Select --", new { @class = "form-control selectFilter", id = "State", style = "display: inline;" })
+        </div>
+        <div style="display: flex; width: 220px; margin-left: 20px;">
+            <b style="margin-top: 5px; margin-right: 6px; ">City : </b>@Html.DropDownList("CityId", new SelectList(ViewBag.city, "Value", "Text"), "-- Select --", new { @class = "form-control selectFilter", id = "City", style = "display: inline;" })
+        </div>
+
+    </div>
+
+}
+
+<div id="multiplexcontent">
+
+
+    @Html.Partial("_IndexPartiaView", Model)
+
+
+</div>
+
+<div class="showpartialview">
+
+</div>
+<br />
+
+@* Edit *@
+<script>
+    function EditMultiplex(id) {
+
+        $.ajax({
+            type: "Get",
+            url: "/Multiplex/EditMultiplexs?multiplexId=" + id,
+            contentType: 'multipart/form-data',
+            cache: false,
+            success: function (response) {
+                $(".showpartialview").html(response);
+                $(".EditMultiplexPartial").show();
+            }
+        });
+    }
+</script>
+
+@* Create *@
+<script>
+    function CreateMultiplex() {
+
+        $.ajax({
+            type: "Get",
+            url: "/Multiplex/MultiplexCreate",
+            contentType: 'multipart/form-data',
+            cache: false,
+            success: function (response) {
+                $(".showpartialview").html(response);
+                $(".CreateMultiplexModal").show();
+            }
+        });
+    }
+</script>
+
+
+
+@section scripts {
+
+    <script>
+
+        $(document).ready(function () {
+            $("#SearchString").on("keyup", function () {
+                SearchButton();
+            });
+            $("#State").on("change", function () {
+                SearchButton();
+            });
+            $("#City").on("change", function () {
+                SearchButton();
+            });
+        });
+
+        function SearchButton() {
+            $.ajax({
+                url: "/Multiplex/IndexPartialViewAsync",
+                type: 'GET',
+                datatype: "HTML",
+                data: { searchCity: $('#City').val(), searchState: $('#State').val(), SearchString: $('#SearchString').val() },
+                success: function (responce) {
+                    $("#multiplexcontent").html(responce)
+                    $(".Openarrow").show();
+                    $(".Screen").hide();
+                    $(".Movie").hide();
+                    $(".Show").hide();
+                    $(".Closearrow").hide();
+                }
+            });
+        };
+
+        $("#State").change(function () {
+            //alert("111");
+            var stateId = $(this).val();
+
+
+            if (stateId != "") {
+                $.ajax({
+                    type: "post",
+                    url: '/Home/getCities?stateId=' + stateId,
+                    contentType: "html",
+                    success: function (response) {
+                        $("#City").empty();
+                        $("#City").append(response);
+                    }
+                });
+            }
+            else {
+                $.ajax({
+                    type: "post",
+                    url: '/Home/getCities?stateId=' + 0,
+                    contentType: "html",
+                    success: function (response) {
+                        $("#City").empty();
+                        $("#City").append(response);
+                    }
+                });
+            }
+        });
+
+
+
+    </script>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $(document).on("click", " #ContantPager a[href]", function () {
+                $.ajax({
+                    type: "GET",
+                    url: $(this).attr("href"),
+                    data: { searchCity: $('#City').val(), searchState: $('#State').val(), SearchString: $('#SearchString').val() },
+                    cache: false,
+                    contentType: "html",
+                    success: function (response) {
+                        $("#multiplexcontent").html(response);
+                        $(".Openarrow").show();
+                        $(".Screen").hide();
+                        $(".Movie").hide();
+                        $(".Show").hide();
+                        $(".Closearrow").hide();
+                    }
+                });
+                return false;
+            })
+        })
+    </script>
+}

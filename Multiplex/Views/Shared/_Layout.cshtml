@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My Multiplex</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    @if (Session["Id"] != null)
+                    {
+                        <li>@Html.ActionLink("Multiplex", "Index", "Multiplex")</li>
+                        <li>@Html.ActionLink("Customer", "Index", "Customer")</li>
+                    }
+                </ul>
+                <ul class="nav navbar-nav" role="menu" style="float:right">
+                    @if (Session["Id"] != null)
+                    {
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" asp-area="" asp-controller="Staffs" asp-action="Index">Welcome @Session["Name"].ToString()<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Language", "LanguageList", "Movie")</li>
+                                <li>@Html.ActionLink("Movies", "MovieList", "Movie")</li>
+                                <li>@Html.ActionLink("State", "StateList", "Home")</li>
+                                <li>@Html.ActionLink("City", "CityList", "Home")</li>
+                                <li>@Html.ActionLink("Logout", "Logout", "Home")</li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Registration", "Create", "Customer")</li>
+                        <li>@Html.ActionLink("Login", "Login", "Home")</li>
+                    }
+                </ul>
+            </div>
+
+
+        </div>
+
+    </div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            <strong>@TempData["Success"]</strong>
+        </div>
+    }
+    @if (TempData["Wrong"] != null)
+    {
+        <div class="alert alert-danger">
+            <strong>@TempData["Wrong"]</strong>
+        </div>
+    }
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        @*<footer>
+                <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            </footer>*@
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/Scripts/toastr.js"></script>
+    <link href="~/Content/toastr.css" rel="stylesheet" />
+
+</body>
+</html>

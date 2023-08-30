@@ -1,0 +1,58 @@
+﻿@*@model IEnumerable<Data.Entity.Language>*@
+@model PagedList.IPagedList<Data.Entity.Language>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@{
+    ViewBag.Title = "LanguageList";
+}
+
+
+<div style="display:flex">
+    <h3 style="margin-bottom: 20px;">
+        Language List
+    </h3>
+    <h3 style="margin-left: auto;  margin-top: 24px;">
+        <a href="@Url.Action("CreateLanguage","Movie")" class="btn btn-default">Add New Language</a>
+        @*@Html.ActionLink("Add New Language", "CreateLanguage")*@
+    </h3>
+</div>
+
+@using (Html.BeginForm("LanguageList", "Home", FormMethod.Get))
+{
+    <p>
+        <b>Find by Name : </b> @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+<table class="table table-hover">
+    <tr>
+        <th>
+            Name
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+
+            <td style="text-align:right">
+                <button>
+                    @Html.ActionLink("Edit", "EditLanguage", new { id = item.Id }) 
+                </button>
+                <button>
+                    @Html.ActionLink("Delete", "DeleteLanguage", new { id = item.Id }, new { onclick = "return confirm('You are sure wants to delete this Record?');" })
+                </button>
+            </td>
+        </tr>
+    }
+
+</table>
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("LanguageList",
+    new { page, currentFilter = ViewBag.CurrentFilter }))

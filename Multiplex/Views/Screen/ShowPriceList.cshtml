@@ -1,0 +1,41 @@
+﻿@*@model IEnumerable<Data.Models.ShowPriceModel>*@
+@model Data.Models.ScreenListModel
+
+@{
+    ViewBag.Title = "ShowPriceList";
+}
+
+<h3>
+    @Html.DisplayFor(modelItem => Model.MultiplexName) > @Html.DisplayFor(modelItem => Model.ShowTime) > Seat Price
+</h3>
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.SeatType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.showPriceModelList)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SeatType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                <button>
+                    @Html.ActionLink("Set Price", "SetPrice", new { seatId = item.Id, showId = item.ShowId })
+                </button>
+            </td>
+        </tr>
+    }
+
+</table>
+<a href="@Url.Action("ShowList","Screen",new {multiplexId = Model.MultiplexId  })" class="btn btn-default">Back</a>

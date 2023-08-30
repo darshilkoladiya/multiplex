@@ -1,0 +1,57 @@
+﻿@model Data.Models.MovieListModel
+
+@{
+    ViewBag.Title = "CreateGenres";
+}
+
+<h2>Add Genres > @Html.DisplayFor(model => model.MovieName, new { @class = "form-control" })</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+       
+        <div class="form-group">
+            @foreach (var item in Model.genresMovieModelsList)
+            {
+                <div style="float: left; margin-right: 60px; margin-top: 30px; ">
+                    <input type="checkbox" id="@item.GenresId" class="form-check-input cstatus" /><label>@item.GenresName</label>
+                </div>
+            }
+        </div>
+
+        @Html.HiddenFor(model => model.MovieId)
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10" style="margin-left: 0px; margin-top: 55px;">
+                <input type="button" onclick="genreCheck()" value="Add" class="btn btn-default" />
+                <a href="@Url.Action("MovieGenres","Movie",new { movieId = Model.MovieId})" class="btn btn-default">Cancel</a>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function genreCheck() {
+        let genreList = "";
+        let movieId = $("#MovieId").val();
+        var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
+        for (var i = 0; i < checkboxes.length; i++) {
+            genreList = genreList + checkboxes[i].id + ","
+        }
+
+        $.ajax({
+            type: "GET",
+            url: '/Movie/SaveSelectedGenre',
+            data: { genreIds: genreList, movieId: movieId },
+            dataType: "html",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (response != null) {
+                    window.location.href ='@Url.Action("MovieGenres","Movie",new { movieId = Model.MovieId})'
+                }
+            }
+        });
+    }
+</script>

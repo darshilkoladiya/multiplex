@@ -1,0 +1,41 @@
+﻿@model Data.Models.Movie_Multiplex_Model
+
+@{
+    ViewBag.Title = "EditMovieMultiplex";
+}
+
+<h2 style=" font-size: 25px;">Edit Movie >  @Html.DisplayFor(model => model.MultiplexName)</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        @Html.HiddenFor(x => x.MultiplexId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MultiplexName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.MultiplexName, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.MovieName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("MovieId", new SelectList(ViewBag.movie, "Value", "Text"), "Select Movie", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.MovieName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+                <a href="@Url.Action("MovieMultiplexList","Screen",new {multiplexId = Model.MultiplexId})" class="btn btn-default">Cancel</a>
+            </div>
+        </div>
+    </div>
+}
+

@@ -1,0 +1,162 @@
+﻿@model Data.Models.MultiplexModel
+
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<div class="modal Multiplex_@Model.Id EditMultiplexPartial" id="Edit" tabindex="-1" data-keyboard="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style=" margin-top: 12%;">
+            <button class="close" data-dismiss="modal" onclick="cancel()" style="margin:25px;">&times;</button>
+            <h4 class="modal-title" style="width: 16.66666667%; text-align: right; margin: 25px 0;">--Edit--</h4>
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id, new { @class = "PartialHideenId" })
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.StateName, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownList("StateId", new SelectList(ViewBag.state, "Value", "Text"), "Select State", new { @class = " StateId form-control" })
+                        @Html.ValidationMessageFor(model => model.StateId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CityName, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownList("CityId", new SelectList(ViewBag.city, "value", "text"), "select city", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CityId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.CheckBoxFor(model => model.IsActive, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Save" class="btn btn-success" onclick="SaveData()" />
+                        <input type="button" value="Cancel" onclick="cancel()" data-dismiss="modal" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script>
+    $(".StateId").change(function () {
+        /*alert("111");*/
+        var stateId = $(this).val();
+
+        $.ajax({
+            type: "post",
+            url: '/Home/getCities?stateId=' + stateId,
+            contentType: "html",
+            success: function (response) {
+                console.log(response);
+                $("#CityId").empty();
+                $("#CityId").append(response);
+            }
+        });
+    });
+</script>
+
+<script>
+    function cancel() {
+        $(".EditMultiplexPartial").remove();
+    }
+
+    $(document).keydown(function (event) {
+        if (event.keyCode == 27) {
+            $('.EditMultiplexPartial').remove();
+        }
+    });
+</script>
+
+<script>
+
+    function SaveData() {
+        var id = $("#Id").val();
+        var name = $("#Name").val();
+        var address = $("#Address").val();
+        var state = $("#StateId").val();
+        var city = $("#CityId").val();
+
+        var model = {
+            Id: id,
+            Name: name,
+            Address: address,
+            StateId: state,
+            CityId: city
+        }
+        let a = 0;
+        for (const data in model) {
+
+            '${ data }: ${ model[data] }';
+            if (model[data] == "") {
+                $("." + data).text("Invalid Input")
+                a++;
+
+            }
+        }
+        if (a > 0) {
+            return false;
+        }
+        SendData(model);
+    }
+    function SendData(model) {
+        $.ajax({
+            url: "/Multiplex/Edit",
+            type: "POST",
+            data: model,
+            success: function (data) {
+                toastr.success("Multiplex Updated successfully...!", "Updated", { timeout: 3000 })
+                $(".EditMultiplexPartial").remove();
+                $.ajax({
+                    url: "/Multiplex/IndexPartialViewAsync",
+                    type: "GET",
+                    contentType: "html",
+                    success: function (response) {
+                        $("#multiplexcontent").html(response);
+                        $(".Openarrow").show();
+                        $(".Screen").hide();
+                        $(".Movie").hide();
+                        $(".Show").hide();
+                        $(".Closearrow").hide();
+                    }
+                });
+            }
+        });
+    }
+
+</script>

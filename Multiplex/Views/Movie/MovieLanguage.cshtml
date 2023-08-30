@@ -1,0 +1,46 @@
+﻿@*@model IEnumerable<Data.Models.LanguageMovieModel>*@
+@model Data.Models.MovieListModel
+@{
+    ViewBag.Title = "MovieLanguage";
+}
+
+<div style="display:flex">
+    <h3 style="margin-bottom: 20px;">
+
+        Language >  @Html.DisplayFor(modelItem => Model.MovieName)
+    </h3>
+    <h3 style="margin-left: auto; margin-top: 18px; ">
+        <a href="@Url.Action("CreateMovieLanguage","Movie", new { id = Model.Id })" class="btn btn-default">Add New Language</a>
+        @*@Html.ActionLink("Add New Language", "CreateMovieLanguage", new { id = Model.Id })*@
+    </h3>
+</div>
+
+
+<table class="table table-hover">
+    <tr>
+
+        <th>
+            @Html.DisplayNameFor(model => model.LanguageName)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.languageMovieModelsList)
+    {
+        <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.LanguageName)
+            </td>
+            <td style="text-align:right">
+                <button>
+                    @Html.ActionLink("Delete", "DeleteMovieLanguage", new { id = item.Id }, new { onclick = "return confirm('You are sure wants to delete this Record?')" })
+                </button>
+            </td>
+        </tr>
+    }
+
+</table>
+<div>
+    <a href="@Url.Action("MovieList","Movie")" class="btn btn-default">Back</a>
+</div>

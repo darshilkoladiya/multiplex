@@ -1,0 +1,59 @@
+﻿@model Data.Models.MovieListModel
+
+@{
+    ViewBag.Title = "CreateFormate";
+}
+
+<h2>Add Formate > @Html.DisplayFor(model => model.MovieName, new { @class = "form-control" })</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @foreach (var item in Model.formateMovieModelsList)
+            {
+                <div style="float: left; margin-right: 60px; margin-top: 30px; ">
+                    <input type="checkbox" id="@item.FormateId" class="form-check-input cstatus" /><label>@item.FormateName</label>
+                </div>
+            }
+        </div>
+        @Html.HiddenFor(model => model.MovieId)
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10" style="margin-left: 0px; margin-top: 55px;">
+                <input type="button" onclick="formateCheck()" value="Add" class="btn btn-default" />
+                <a href="@Url.Action("MovieFormate","Movie",new { movieId = Model.MovieId})" class="btn btn-default">Cancel</a>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script>
+    function formateCheck() {
+        let formateList = "";
+        let movieId = $("#MovieId").val();
+        var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
+        for (var i = 0; i < checkboxes.length; i++) {
+            formateList = formateList + checkboxes[i].id + ","
+        }
+
+        $.ajax({
+            type: "GET",
+            url: '/Movie/SaveSelectedFormate',
+            data: { formateIds: formateList, movieId: movieId },
+            dataType: "html",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (response != null) {
+                    window.location.href ='@Url.Action("MovieFormate", "Movie",new { movieId = Model.MovieId})'
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,11 @@
+﻿@model  IEnumerable<Data.Models.DropDownModel>
+<option value="">-- Select --</option>
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <option value="@item.Id">@item.Name</option>
+
+    }
+}
+

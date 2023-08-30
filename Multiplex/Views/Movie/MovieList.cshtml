@@ -1,0 +1,98 @@
+﻿@*@model IEnumerable<Data.Entity.Movie>*@
+@model PagedList.IPagedList<Data.Models.MovieModel>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "MovieList";
+}
+
+<div style="display:flex">
+    <h3 style="margin-bottom: 20px;">
+        Movie List
+    </h3>
+    <h3 style="margin-left: auto;  margin-top: 25px; ">
+        <a href="@Url.Action("CreateMovie","Movie")" class="btn btn-default">Add New Movie</a>
+    </h3>
+</div>
+
+
+@using (Html.BeginForm("MovieList", "Home", FormMethod.Get))
+{
+    <p>
+        <b>Find by Name : </b> @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+
+@*<tr>
+        <th>
+            Poster
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            ReleaseDate
+        </th>
+
+
+        <th></th>
+    </tr>*@
+<div style="width:800px; display:flex; @*overflow-x:auto*@">
+
+    @foreach (var item in Model)
+    {
+        <div style="margin:25px">
+
+            <div class="w-25 p-3">
+                <img src="~/Image/@item.Image" width="135" height="200" />
+            </div>
+            <h4>
+                @Html.DisplayFor(modelItem => item.Name)
+            </h4>
+            @*<h5>
+                    @Html.DisplayFor(modelItem => item.ReleaseDate)
+                </h5>*@
+            <div class="d-flex">
+
+                <button>
+                    @Html.ActionLink("Edit", "EditMovie", new { id = item.Id })
+                </button>
+                <button>
+                    @Html.ActionLink("Delete", "DeleteMovie", new { id = item.Id }, new { onclick = "return confirm('You are sure wants to delete this Record?');" })
+                </button>
+            </div>
+                <button>
+                    @Html.ActionLink("Genres", "MovieGenreList", new { id = item.Id })
+                </button>
+                <button>
+                    @Html.ActionLink("Formate", "MovieFormateList", new { id = item.Id })
+                </button>
+            <button>
+                    @Html.ActionLink("Language", "MovieLanguageList", new { id = item.Id })
+                </button>
+        </div>
+        @*<tr>
+                <td style="width: 22%;">
+                    <img src="~/Image/@item.Image" width="135" height="200" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td style="width: 25%;">
+                    @Html.DisplayFor(modelItem => item.ReleaseDate)
+                </td>
+
+                <td>
+                    @Html.ActionLink("Edit", "EditMovie", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "DeleteMovie", new { id = item.Id }, new { onclick = "return confirm('You are sure wants to delete this Record?');" })
+                </td>
+            </tr>*@
+    }
+</div>
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("MovieList",
+    new { page, currentFilter = ViewBag.CurrentFilter }))

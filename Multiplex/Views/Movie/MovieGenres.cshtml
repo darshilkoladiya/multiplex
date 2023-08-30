@@ -1,0 +1,48 @@
+﻿@*@model IEnumerable<Data.Models.GenresMovieModel>*@
+@model Data.Models.MovieListModel
+
+@{
+    ViewBag.Title = "MovieGenres";
+}
+
+<div style="display:flex">
+    <h3 style="margin-bottom: 20px;">
+
+        Genres >  @Html.DisplayFor(modelItem => Model.MovieName)
+    </h3>
+    <h3 style="margin-left: auto; margin-top: 18px; ">
+        <a href="@Url.Action("CreateGenres","Movie", new { id = Model.Id })" class="btn btn-default">Add New Genres</a>
+        @*@Html.ActionLink("Add New Genres", "CreateGenres", new { id = Model.Id })*@
+    </h3>
+</div>
+
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.GenreName)
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.genresMovieModelsList)
+    {
+        <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.GenresName)
+            </td>
+            <td style="text-align: right">
+                <button>
+                    @Html.ActionLink("Delete", "DeleteGenre", new { id = item.Id }, new { onclick = "return confirm('You are sure wants to delete this Record?')" })
+                </button>
+            </td>
+        </tr>
+    }
+
+
+</table>
+<div>
+    <a href="@Url.Action("MovieList","Movie")" class="btn btn-default">Back</a>
+</div>
